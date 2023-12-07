@@ -1,0 +1,71 @@
+#we want to compare different areas and the differences during time based on the numer of pixels (mountain, wood, urban)
+#pixels are training areas-->useful to make known the cluster = is a set of individual object with same carachteristics
+#to classify one pixel we see wich class is the nearest (based on the diffrent distances on axis)
+
+##classifying satellite images and estimate the amount of change
+
+library(terra)
+library(imageRy)
+
+im.list()
+
+sun <- im.import("Solar_Orbiter_s_first_views_of_the_Sun_pillars.jpg")
+#three level of energy of sun's gasses(orange, yellow, black); We want to classify the image finding clusters
+
+sunc <- im.classify(sun, num_clusters=3)
+# to see which class is the one with the higher energy we just need to compare the "original" image with this one
+
+#classify satellite 
+
+im.list
+
+m1992 <- im.import("matogrosso_l5_1992219_lrg.jpg")
+m2006 <- im.import("matogrosso_ast_2006209_lrg.jpg")
+
+m1992c <- im.classify(m1992, num_clusters=2)
+plot(m1992c)
+#classes: human=1, forest=2
+
+plot(m2006)
+m2006c <- im.classify(m2006, num_clusters=2)
+plot(m2006c)
+#classes: human=1; forest=2
+
+par(mfrow=c(1,2))
+plot(m1992c)
+plot(m2006c)
+
+par(mfrow=c(1,2))#just to make the plot right
+plot(m1992c[[1]])
+plot(m2006c[[1]])
+
+#command to count pixels(with the frequency of them) 
+f1992 <- freq(m1992c)
+#to find the percentage we just need to divide the number by the totalt number of pixels
+tot1992 <- ncell(m1992c) #function to count the total number
+tot1992
+p1992 <- f1992 * 100 / tot1992
+p1992
+#forest=83%; human=17%
+
+#percentage 
+f2006 <- freq(m2006c)
+#to find the percentage we just need to divide the number by the totalt number of pixels
+tot2006 <- ncell(m2006c) #function to count the total number
+tot2006
+p2006 <- f2006 * 100 / tot2006
+p2006
+#forest=45%; human=55%
+
+#building the final table
+class <- c("forest", "human")
+y1992 <- c(83, 17)
+y2006 <- c(45, 55)
+
+tabout <- data.frame(class, y1992, y2006)
+tabout
+
+#final output
+p1 <- ggplot(tabout, aes(x=class, y=y1992, color=class)) + geom_bar(stat="identity", fill="white"))
+#aes=it is the class
+#geom_bar= to create an histogram
