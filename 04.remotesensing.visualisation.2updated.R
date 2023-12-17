@@ -1,3 +1,5 @@
+#those packages are downloded from CRAN
+#we will use images from sentinel, that is a satellite that send rays of different wavelengths; so we can make analysis and see differences with different bands
 install.packages("imageRy")
 
 library(imageRy)
@@ -52,7 +54,7 @@ plot(b8, col=cl8)
 #band3 green element 2, stacksent[[2]]
 #band4 red element 3, stacksent[[3]]
 #band8 NIR element 4, stacksent[[4]]
-im.plotRGB(stacksent, r=3, g=2, b=1 ) #you decide the band to use
+im.plotRGB(stacksent, r=3, g=2, b=1 ) #you decide the band to use and how to change the color
 im.plotRGB(stacksent, r=4, g=3, b=2)
 im.plotRGB(stacksent, r=3, g=4, b=2)
 im.plotRGB(stacksent, r=3, g=2, b=4)
