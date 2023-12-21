@@ -28,3 +28,23 @@ plot(sd3)
 # we are changing  colors, and the legend with the package viridis (255 is the umbeer of colors that are in the package viridis)
 viridisc<-colorRampPalette(viridis(7))(255)
 plot(sd3, col=viridisc)
+#the area in which there is more variability is north-west
+#calculate the variability in a 7x7 pixels moving window
+sd7 <- focal(nir, matrix(1/49, 7, 7), fun=sd)
+plot(sd7)
+
+plot(sd7, col=viridisc)
+#if you enlarge the moving window we can see a higher variability because we include additional pixels
+
+
+#plot via par(mfrow()) the 3x3 and the 7x7 standard deviation
+par(mfrow=c(1,2))
+plot(sd3, col=viridisc)
+plot(sd7, col=viridisc)
+
+#original image plus the 7x7 sd
+im.plotRGB(sent, r=2, g=1, b=3)
+plot(sd7, col=viridisc)
+#yellow/green line demonstrates a high variability, on the left where there is the white portion there can be snow or clouds in the middle 
+#high sd can mean high variability or geologically varibaility
+#how to chose the layer in which we apply the method? we use multivariate analysis
