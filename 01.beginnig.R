@@ -1,15 +1,19 @@
-# here I can write anything you want, and nothing can happen. It is useful to make viewers to undersant what you are doing
+# here I can write anything I want, and nothing can happen. It is useful to make viewers to undersant what you are doing
 
 # R as a calculaotor 
 2+3
 
-# assing to an object
+# assing to an object a value with the oparator <- and the object will become a variable 
 zima <- 2+3
 zima
 
 duccio <- 5+3
 duccio
 
+#we can make some operations
+zima*duccio
+
+#and then rename the variables with wiìhich we perform the operations
 final <- zima*duccio
 final
 
