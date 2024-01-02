@@ -20,23 +20,33 @@ final
 final^2
 
 # array, a series of numbers put together 
-sophie <- c(10,20,30,50,70) #microplastics, numbers are called arguments and functions have parentheses
+# we collected data on grams of microplastics in a lake, numbers are called arguments and functions have parentheses
+# with arrays we use c = "concatenate" arguments and then assign them to a variable
+sophie <- c(10,20,30,50,70) 
 
+# this ine is an array with the amount of people in the different spots where microplastics were collected 
 paula <- c(100,500,600,1000,2000) #people
 
-plot(paula , sophie)
+#we can create a plot with the 2 variables, sophie (x) and paula (y) 
+plot(paula, sophie) #there is a positive correlation 
 
-plot(paula , sophie, xlab="number of people", ylab="microplastics")
-
+#i if you want to put a new label, you can use the plot function with argument xlab=" " and ylab=" "
+plot(paula, sophie, xlab="number of people", ylab="microplastics")
+#another way is to renamne variables 
 people <- paula
 microplastics <- sophie
 
 plot(people, microplastics)
 
-#http://www.sthda.com/sthda/RDoc/images/points-symbols.png
+# we can change plot characteristics
+plot(people, microplastics, pch=19) #to change the symbols, http://www.sthda.com/sthda/RDoc/images/points-symbols.png
 
-plot(people, microplastics, pch=19)
+plot(people, microplastics, pch=19, cex=2) #cex gives different sizez to the plot  
 
-plot(people, microplastics, pch=19, cex=2)
+plot(people, microplastics, pch=19, cex=2, col="blue") #to change colors, here is important to put the quotes
 
-plot(people, microplastics, pch=19, cex=2, col="blue")
+
+#how to install packages, with the function install.packages 
+install.packages("sp") 
+# to see if the package is installed succesfully, we recall it with the library function
+library(sp)
