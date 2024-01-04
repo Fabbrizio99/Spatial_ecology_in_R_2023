@@ -27,8 +27,8 @@ pldc4= ldc4 * 100 / total
 
 pldc1  
 pldc2
-plcd3
-plcd4
+pldc3
+pldc4
 
 total
 
