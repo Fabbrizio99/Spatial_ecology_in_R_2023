@@ -17,6 +17,8 @@
 # 07 external data
 # 08 Copernicus data
 # 09 Classification
+# 10 Variability
+# 11 Principal Component Analysis
 
 #--------------------
 
@@ -642,7 +644,105 @@ y2006 <- c(45, 55)
 tabout <- data.frame(class, y1992, y2006)
 tabout
 
+#--------------------
+
+# 10 Variability
+
+#the higher the variability, the higher the nubmber of species
+#measurement from RS based variability
+
+library(imageRy)
+library(terra)
+library(viridis)
+
+#make a list of all the files that are available 
+im.list()
+
+sent <- im.import("sentinel.png")
+#first band is the NIR
+#second band is red
+#third band is green
+im.plotRGB(sent, r=1, g=2, b=3) #vegetation is red here, since the NIR is in the first layer
+#change the visualization
+im.plotRGB(sent, r=2, g=1, b=3) #vegetation is green since NIR is in the second band 
+
+nir <- sent [[1]]
+plot(nir) #green part is vegetatio, orange is bare soil, 
+
+
+#moving window--> it calculates the standard deviations of the centrale pixel from a nine selection(3x3) and it is moving until it measure the whole picture, it puts the value in the
+#central pixel each time 
+#focal, we use the band nir, matrix is describing the dimension of the moving window that here is a 3x3, we descfribe the function we want to use
+sd3 <- focal(nir, matrix(1/9, 3, 3), fun=sd)
+plot(sd3)
+# we are changing  colors, and the legend with the package viridis (255 is the umbeer of colors that are in the package viridis)
+viridisc<-colorRampPalette(viridis(7))(255)
+plot(sd3, col=viridisc)
+#the area in which there is more variability is north-west
+#calculate the variability in a 7x7 pixels moving window
+sd7 <- focal(nir, matrix(1/49, 7, 7), fun=sd)
+plot(sd7)
+
+plot(sd7, col=viridisc)
+#if you enlarge the moving window we can see a higher variability because we include additional pixels
+
+
+#plot via par(mfrow()) the 3x3 and the 7x7 standard deviation
+par(mfrow=c(1,2))
+plot(sd3, col=viridisc)
+plot(sd7, col=viridisc)
+
+#original image plus the 7x7 sd
+im.plotRGB(sent, r=2, g=1, b=3)
+plot(sd7, col=viridisc)
+#yellow/green line demonstrates a high variability, on the left where there is the white portion there can be snow or clouds in the middle 
+#high sd can mean high variability or geologically varibaility
+#how to chose the layer in which we apply the method? we use multivariate analysis
+
 #final output
 p1 <- ggplot(tabout, aes(x=class, y=y1992, color=class)) + geom_bar(stat="identity", fill="white"))
 #aes=it is the class
 #geom_bar= to create an histogram
+
+#--------------------
+
+# 11 Principal Component Analysis
+
+library(imageRy)
+library(terra)
+library(viridis)
+
+im.list()
+
+sent <- im.import("sentinel.png")
+pairs(sent) #sentinel 2 and 3 (red and green) are really correlated to each other (0.98), the NIR is less correlated so it is not adding informations in fact we should remove it
+
+#perform PCA on sent
+sentpc <- im.pca(sent)
+
+pc1 <- sentpc$PC1
+viridisc <- colorRampPalette(viridis(7))(255)
+plot(pc1, col=viridisc)
+
+#calculating standard deviation on top of pc1
+pc1sd3<-focal(pc1, matrix(1/9, 3, 3), fun=sd)
+plot(pc1sd3, col=viridisc)
+#we calculated on a single layer
+
+pc1sd7<-focal(pc1, matrix(1/49, 7, 7), fun=sd)
+plot(pc1sd7, col=viridisc)
+
+par(mfrow=c(2,3))
+im.plotRGB(sent, 2, 1, 3)
+#sd from the vaiability script:
+plot(sd3, col=viridisc)
+plot(sd7, col=viridisc)
+plot(pc1, col=viridisc)
+plot(pc1sd3, col=viridisc)
+plot(pc1sd7, col=viridisc)
+
+#stack all the standard deviation layers
+sdstack <- c(sd3, sd7, pc1sd3, pc1sd7)
+names(sdstack) <- c("sd3", "sd7", "pc1sd3", "pc1sd7") 
+plot(sdstack, col=viridisc)
+
