@@ -9,7 +9,7 @@ library(terra)
 im.list()
 
 b2 <- im.import("sentinel.dolomites.b2.tif")
-cl <- colorRampPalette(c("black","grey","light grey")) (100)
+cl <- colorRampPalette(c("black","grey","light grey")) (100) #to change colors
 cl <- colorRampPalette(c("dark grey","grey","light grey")) (100)
 plot(b2, col=cl)
 
@@ -17,26 +17,33 @@ plot(b2, col=cl)
 b3 <- im.import("sentinel.dolomites.b3.tif")
 cl <- colorRampPalette(c("dark grey","grey","light grey")) (100)
 plot(b3, col=cl)
+# the highest the reflectance, the lightest the colour on the right scale
 
+# to import the red band (band number 4)
 b4 <- im.import("sentinel.dolomites.b4.tif")
 plot(b4, col=cl)
 
-#multiframes 
+# to import the NIR band (band number 8)
+b8<-im.import("sentinel.dolomites.b8.tif")
+cl<-colorRampPalette(c("black","grey","light grey")) (100)
+plot(b8, col=cl)
+
+# multiframe
 par(mfrow=c(2,2))
 plot(b2, col=cl)
 plot(b3, col=cl)
 plot(b4, col=cl)
-plot(b8, col=cl) #the NIR has more informations
+plot(b8, col=cl) # the NIR has more informations
 
 #create a stack image of all the bands together and then plot it
 stacksent <- c(b2, b3, b4, b8)
 stacksent
-plot(stacksent, col=cl) #its the same but in one command 
+plot(stacksent, col=cl) # it's the same but in one command 
 dev.off() #it closes devices
 
-plot(stacksent[[4]], col=cl) #i'm asking to select the image number 4, so the NIR one 
+plot(stacksent[[4]], col=cl) # i'm asking to select the image number 4, so the NIR one 
 
-plot(c(b2, b3, b4, b8), col=cl) #also working
+plot(c(b2, b3, b4, b8), col=cl) # also working
 
 #Exercise: plot in multiframe the band with different color ramps
 cl2 <- colorRampPalette(c("dark grey","grey","light grey")) (100)
