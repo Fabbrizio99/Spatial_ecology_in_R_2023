@@ -1,4 +1,5 @@
-# https://land.copernicus.vgt.vito.be/PDF/portal/Application.html
+# copernicus is an european earth observatory
+# link: https://land.copernicus.vgt.vito.be/PDF/portal/Application.html
 
 library(ncdf4)
 library(terra)
