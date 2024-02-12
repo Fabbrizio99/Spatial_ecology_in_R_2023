@@ -36,6 +36,11 @@ plot(dvi1992)
 
 cl <- colorRampPalette(c("darkblue", "yellow", "red", "black"))(100)
 plot(dvi1992, col=cl)
+#let's do the same for 2006
+plot(m2006)
+dvi2006 = m2006[[1]]-m2006[[2]]
+plot(dvi2006, col=cl)
+#we see now healty vegetation is a very small amount, as deforestation is destroying the forest
 
 # if we have images with different bits we have to standardize the bit (normalized) 
 # NDVI=NIR-RED/NIR+RED
