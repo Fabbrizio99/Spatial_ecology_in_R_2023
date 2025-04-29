@@ -5,13 +5,21 @@ library(viridis)
 im.list()
 
 sent <- im.import("sentinel.png")
-pairs(sent) #sentinel 2 and 3 (red and green) are really correlated to each other (0.98), the NIR is less correlated so it is not adding informations in fact we should remove it
+#how to choose the layer to which apply the sd calculation?
+#here we chose NIR, but we need a method
+#this method is the multivariate analysis
+
+pairs(sent) 
+#red and green are very correlated to each other (0.98 as pearson coefficient)
+#nir is less correlated to the other bands, so it is adding some information
 
 #perform PCA on sent
 sentpc <- im.pca(sent)
-
+sentpc
+#sd is 77 in the first principal component
+#the first component is pc1. we can separate it
 pc1 <- sentpc$PC1
-viridisc <- colorRampPalette(viridis(7))(255)
+viridisc <- colorRampPalette(viridis(7))(255) #change the colours
 plot(pc1, col=viridisc)
 
 #calculating standard deviation on top of pc1
@@ -30,6 +38,9 @@ plot(sd7, col=viridisc)
 plot(pc1, col=viridisc)
 plot(pc1sd3, col=viridisc)
 plot(pc1sd7, col=viridisc)
+
+#we have chosen in a objective manner to choose the band on which to make the calculation
+
 
 #stack all the standard deviation layers
 sdstack <- c(sd3, sd7, pc1sd3, pc1sd7)
