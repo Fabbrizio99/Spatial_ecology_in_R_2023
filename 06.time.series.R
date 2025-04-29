@@ -38,13 +38,13 @@ plot(g2015, col=clg)
 par(mfrow=c(2,1))
 plot(g2000, col=clg)
 plot(g2015, col=clg)
-# black area is restricting during years
+# black area is restricted during years
 
 # stacking the data together and all the 4 images in a plot 
 stackg <- c(g2000, g2005, g2010, g2015)
 plot(stackg, col=clg)
 
-#exercise: make the diffeerence betweeen the first and the final elements of the stack
+#exercise: make the difference between the first and the final elements of the stack
 difg = g2000[[1]] - g2015[[1]] 
 # or difg <- stackg[[1]] - stackg[[4]]
 plot(difg, col=cldif)
@@ -56,6 +56,7 @@ plot(difg, col=cldif)
 im.plotRGB(stackg, r=1, g=2, b=3)
 #since its more darker we know that the temperature is increasing in the inner part 
 
-
+#we have the possibility to monitor changes on the hearth.
+#we can use satellite data to make comparisons and plot
 
 
