@@ -8,17 +8,21 @@ library(terra)
 library(imageRy)
 
 im.list()
+#let's take a file related to the sun: "Solar_Orbiter_s_first_views_of_the_Sun_pillars.jpg"
 
-sun <- im.import("Solar_Orbiter_s_first_views_of_the_Sun_pillars.jpg")
-#three level of energy of sun's gasses(orange, yellow, black); We want to classify the image finding clusters
+#we can classify the amount of energy of sun gases. 
+sun <- im.import("Solar_Orbiter_s_first_views_of_the_Sun_pillars.jpg") #let's import the picture we are interested in
+#we should explain to the software which are the numbers of classes. here for example we expect three classes
+sun.class <- im.classify(sun, num_clusters = 3)
+sun.class
+plot(sun.class) #we get the pixels classified for the amount of energy.
+#how can I state which class has the highest energy?
+plot(sun)
+#the part with the highest energy is on the right. so let's plot again sun.class
+plot(sun.class)
+#the class on the right is number two in this case. 
 
-sunc <- im.classify(sun, num_clusters=3)
-# to see which class is the one with the higher energy we just need to compare the "original" image with this one
-
-#classify satellite 
-
-im.list
-
+#let's apply this classification method to mato grosso.
 m1992 <- im.import("matogrosso_l5_1992219_lrg.jpg")
 m2006 <- im.import("matogrosso_ast_2006209_lrg.jpg")
 
@@ -65,7 +69,21 @@ y2006 <- c(45, 55)
 tabout <- data.frame(class, y1992, y2006)
 tabout
 
-#final output
-p1 <- ggplot(tabout, aes(x=class, y=y1992, color=class)) + geom_bar(stat="identity", fill="white"))
-#aes=it is the class
-#geom_bar= to create an histogram
+library(ggplot2) 
+#let's plot the percentage of 1992 
+t1<-ggplot(tab, aes(x=class, y=y1992, color=class)) + geom_bar(stat="identity", fill="white") #aes=aesthetics characteristics
+t1
+#let's get a table with the bars of the percentage of the year 2006
+t2<-ggplot(tab, aes(x=class, y=y2006, color=class)) + geom_bar(stat="identity", fill="white")
+t2
+
+#to plot them together, we can use the patchwork package. 
+install.packages("patchwork")
+library(patchwork)
+t1+t2 #we see the two plotted together 
+
+#let's rescale the two graphs
+#we give the same scale to actually make them comparable
+p1 <- ggplot(tabout, aes(x=class, y=y1992, color=class)) + geom_bar(stat="identity", fill="white") + ylim(c(0,100)) 
+p2 <- ggplot(tabout, aes(x=class, y=y2006, color=class)) + geom_bar(stat="identity", fill="white") + ylim(c(0,100))
+p1 + p2
