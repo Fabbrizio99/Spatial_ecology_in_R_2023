@@ -157,7 +157,7 @@ plot(elev)
 #--------------------
 # 02.2 population density 
 
-# why population disperse over tha landscape in acertain manner?
+# why does the population disperse over the landscape in a certain manner?
 
 library(sdm)
 library(terra)
@@ -166,10 +166,10 @@ file <- system.file("external/species.shp", package="sdm")
 
 rana <- vect(file)
 
-rana$Occurrence # questo ci da i "presence absence data", per capire se ci sono o no gli esemplari in determinate posizioni
-#facciamo il grafico delle posizioni del vettore rana, cioè presenza e assenza 
+rana$Occurrence # this gives us the ‘presence absence data’ to understand whether or not there are specimens in certain positions
+#we graph the positions of the frog vector, i.e. presence and absence 
 plot(rana)
-#dobbiamo scegliere solamente dove c'è presenza o assenza
+#we must only choose where there is presence or absence
 
 # selecting presences
 pres <- rana[rana$Occurrence==1,] #per chiudere si usa la virgola, 
@@ -183,15 +183,15 @@ plot(pres, cex=0.5)
 plot(abse, cex=0.5)
 
 # exercise: plot pre and abse alltogether with two different colours
-#prima è meglio chiudere i grafici con la funzione dev.off()
+# first it is better to close the graphs with the dev.off() function
 par(mfrow=c(1,2))
 plot(pres, cex=0.5, col="blue")
 plot(abse, cex=0.5, col="dark green")
-#in questo modo lo si fa in due grafici diversi mentre per farlo nello stesso grafico si usa:
+# this way you do it in two different graphs whereas to do it in the same graph you use:
 plot(pres, col="dark blue")
 points(abse, col="light blue")
 
-# predictors: environmnetal variables
+# predictors: environmental variables
 elev <- system.file("external/elevation.asc", package="sdm") #questa volta non stiamo importando dati ma immagini, cioè rasters
 elevmap <- rast(elev) #from terra package
 elevmap
@@ -304,45 +304,59 @@ overlapPlot(timetig, timecac)
 
 # 04 remote sensing data vizualisation
 
-#those packages are downloded from CRAN
-#we will use images from sentinel, that is a satellite that send rays of different wavelengths; so we can make analysis and see differences with different bands
+#those packages are downloaded from CRAN
+#we will use images from sentinel, that is a satellite that send rays of different wavelengths; so we can make an analysis and see differences with different bands
 install.packages("imageRy")
 
 library(imageRy)
 library(terra)
 
-#list the data, evrything starting with im is from the package imagerRy
-im.list()
+#to see all the data in the package
+im.list() #we get all the different data we can use
+#all the functions from imageRy start with I'm.
 
+#we will first use the sentinel data (satellite from ESA). 
+#we are using images of the same spatial resolution (10metres). we will use 4 different bands
 b2 <- im.import("sentinel.dolomites.b2.tif")
-cl <- colorRampPalette(c("black","grey","light grey")) (100)
+cl <- colorRampPalette(c("black","grey","light grey")) (100) #to change colors
 cl <- colorRampPalette(c("dark grey","grey","light grey")) (100)
 plot(b2, col=cl)
+
+#every sensor gathers information with different wavelengths
+#every color is a spectral band. As an example, band 8 is near infra-red (NIR) with 10 meters of spatial resolution
 
 # import the green band from sentinel-2 (band 3)
 b3 <- im.import("sentinel.dolomites.b3.tif")
 cl <- colorRampPalette(c("dark grey","grey","light grey")) (100)
 plot(b3, col=cl)
+# the highest the reflectance, the lightest the colour on the right scale
 
+# to import the red band (band number 4)
 b4 <- im.import("sentinel.dolomites.b4.tif")
 plot(b4, col=cl)
 
-#multiframes 
+# to import the NIR band (band number 8)
+b8<-im.import("sentinel.dolomites.b8.tif")
+cl<-colorRampPalette(c("black","grey","light grey")) (100)
+plot(b8, col=cl)
+
+# multiframe
 par(mfrow=c(2,2))
 plot(b2, col=cl)
 plot(b3, col=cl)
 plot(b4, col=cl)
-plot(b8, col=cl) #the NIR has more informations
+plot(b8, col=cl) # the NIR has more informations
 
-#create a stack image of all the bands together and then plot it
+#we can also stack all the bands together and then plot them together. 
+#we should see the bands as part of an array
 stacksent <- c(b2, b3, b4, b8)
 stacksent
-plot(stacksent, col=cl) #its the same but in one command 
+plot(stacksent, col=cl) # it's the same but in one command 
 dev.off() #it closes devices
 
-plot(stacksent[[4]], col=cl) #i'm asking to select the image number 4, so the NIR one 
+plot(stacksent[[4]], col=cl) # i'm asking to select the image number 4, so the NIR one 
 
-plot(c(b2, b3, b4, b8), col=cl) #also working
+plot(c(b2, b3, b4, b8), col=cl) # also working
 
 #Exercise: plot in multiframe the band with different color ramps
 cl2 <- colorRampPalette(c("dark grey","grey","light grey")) (100)
@@ -355,18 +369,27 @@ plot(b3, col=cl3)
 plot(b4, col=cl4)
 plot(b8, col=cl8)
 
-## RGB
+
+## RGB colours=red, green, blue. The RGB space is how computers create colours. 
 #stacksent: band2 blue element 1, stacksent[[1]]
 #band3 green element 2, stacksent[[2]]
 #band4 red element 3, stacksent[[3]]
 #band8 NIR element 4, stacksent[[4]]
 im.plotRGB(stacksent, r=3, g=2, b=1 ) #you decide the band to use and how to change the color
-im.plotRGB(stacksent, r=4, g=3, b=2)
+im.plotRGB(stacksent, r=4, g=3, b=2) #we see peaks, streets, rivers, two kinds of vegetation
 im.plotRGB(stacksent, r=3, g=4, b=2)
-im.plotRGB(stacksent, r=3, g=2, b=4)
+im.plotRGB(stacksent, r=3, g=2, b=4) #everything that reflects the NIR will become blue
 
 
+#if we want to see the correlation of information from one band to another:
+?pairs
 pairs(stacksent)
+#we have the dots plotted and the pearson correlation value
+#second and third bands are highly correlated, they give more or less the same information
+#the NIR is not that correlated, it adds some more informations
+#in the graphs we see the reflectance of the points
+
+#reflectance=ratio between reflected radiant flux (energy) and the incident radiant flux (energy)
 
 #--------------------
 
@@ -446,18 +469,18 @@ plot(ndvi2006, col=clvir)
 library(imageRy)
 library(terra)
 
-im.list()
+im.list() # to check the content
 
 #impot the data of levels of no2 in two different periods 
-EN01 <- im.import("EN_01.png")
-EN13 <- im.import("EN_13.png")
+EN01 <- im.import("EN_01.png") # situation in january 2020
+EN13 <- im.import("EN_13.png") # situation in march, during quarantine, we can see that the red part has decreased
 
-par(mfrow=c(2,1))
+par(mfrow=c(2,1)) # create a multiframe 
 im.plotRGB.auto(EN01)
 im.plotRGB.auto(EN13)
-#now we want to see the differences between the two values from the first image and the second
 
-dif = EN01[[1]] - EN13[[1]]
+#now we want to see the differences between the two values from the first image and the second
+dif = EN01[[1]] - EN13[[1]] # we use only the first band 
 #we change the colors
 cldif <- colorRampPalette(c('blue','white','red'))(100)
 plot(dif, col=cldif)
@@ -465,12 +488,13 @@ plot(dif, col=cldif)
 #red part are where the values were higher in january due to stop of cars, and blue is where the value is higher in march
 
 #example with temperature in greenland
-g2000 <- im.import("greenland.2000.tif")
+g2000 <- im.import("greenland.2000.tif") # this is a single band representing temperature in 16 bits
 g2000
 
-clg <- colorRampPalette(c('blue','white','red'))(100) #blue one is the zone with lower temperature
+clg <- colorRampPalette(c('black','blue','white','red'))(100) #blue one is the zone with lower temperature
 plot(g2000, col=clg)
 
+# import data from the following years
 g2005 <- im.import("greenland.2005.tif")
 g2010 <- im.import("greenland.2010.tif")
 g2015 <- im.import("greenland.2015.tif")
@@ -480,21 +504,26 @@ plot(g2015, col=clg)
 par(mfrow=c(2,1))
 plot(g2000, col=clg)
 plot(g2015, col=clg)
+# black area is restricted during years
 
-#stacking the data together and all the 4 images in a plot 
+# stacking the data together and all the 4 images in a plot 
 stackg <- c(g2000, g2005, g2010, g2015)
 plot(stackg, col=clg)
 
-#exercise: make the diffeerence betweeen the first and the final elements of the stack
+#exercise: make the difference between the first and the final elements of the stack
 difg = g2000[[1]] - g2015[[1]] 
 # or difg <- stackg[[1]] - stackg[[4]]
 plot(difg, col=cldif)
 
-#we can see that in the center the temperature is incresing
+# we can see that in the center the temperature is incresing
 
 #exercise: make a RGB plot usign diffreent years (with RGB.plot)
+# high values in 2000 will be red, in 2005 green and in 2010 blue
 im.plotRGB(stackg, r=1, g=2, b=3)
-#since its more darker we know that the tempaerature is increasing in the inner part 
+#since its more darker we know that the temperature is increasing in the inner part 
+
+#we have the possibility to monitor changes on the hearth.
+#we can use satellite data to make comparisons and plot
 
 #--------------------
 
@@ -544,17 +573,22 @@ plotRGB(mato, r=2, g=1, b=3)
 
 # 08 Copernicus data
 
-# https://land.copernicus.vgt.vito.be/PDF/portal/Application.html
+# Copernicus is a european earth observatory
+# link: https://land.copernicus.vgt.vito.be/PDF/portal/Application.html
 
 library(ncdf4)
 library(terra)
 
 # install.packages("name_of_the_package_here")
 
+#we need to tell R where our data are stored. 
+#we should set the working directory with the function setwd("...")
+
 setwd("~/Downloads") # in W*****s \ means /
 
 soilm2023 <- rast("c_gls_SSM1km_202311250000_CEURO_S1CSAR_V1.2.1.nc")
 plot(soilm2023)
+# ssm_noise is the error in the measurement
 
 # there are two elements, let's use the first one!
 plot(soilm2023[[1]])
@@ -562,10 +596,12 @@ plot(soilm2023[[1]])
 cl <- colorRampPalette(c("red", "orange", "yellow")) (100)
 plot(soilm2023[[1]], col=cl)
 
-ext <- c(22, 26, 55, 57) # minlong, maxlong, minlat, maxlat
-soilm2023c <- crop(soilm2023, ext)
-
-plot(soilm2023c[[1]], col=cl)
+#let's crop the image we imported
+#we first need to define the extent
+ext<-c(22, 26, 55, 57) #we have to insert: minimum longitude, maximum longitude, minimum latitude, maximum latitude)
+soilmoisture.crop<-crop(soilmoisture, ext) #we use the function crop, which takes the images and then crops it with the extent we previously set
+plot(soilmoisture.crop)
+plot(soilmoisture.crop[[1]], col=cl) #to plot only the first element
 
 # new image
 soilm2023_24 <- rast("c_gls_SSM1km_202311240000_CEURO_S1CSAR_V1.2.1.nc")
@@ -587,17 +623,21 @@ library(terra)
 library(imageRy)
 
 im.list()
+#let's take a file related to the sun: "Solar_Orbiter_s_first_views_of_the_Sun_pillars.jpg"
 
-sun <- im.import("Solar_Orbiter_s_first_views_of_the_Sun_pillars.jpg")
-#three level of energy of sun's gasses(orange, yellow, black); We want to classify the image finding clusters
+#we can classify the amount of energy of sun gases. 
+sun <- im.import("Solar_Orbiter_s_first_views_of_the_Sun_pillars.jpg") #let's import the picture we are interested in
+#we should explain to the software which are the numbers of classes. here for example we expect three classes
+sun.class <- im.classify(sun, num_clusters = 3)
+sun.class
+plot(sun.class) #we get the pixels classified for the amount of energy.
+#how can I state which class has the highest energy?
+plot(sun)
+#the part with the highest energy is on the right. so let's plot again sun.class
+plot(sun.class)
+#the class on the right is number two in this case. 
 
-sunc <- im.classify(sun, num_clusters=3)
-# to see which class is the one with the higher energy we just need to compare the "original" image with this one
-
-#classify satellite 
-
-im.list
-
+#let's apply this classification method to mato grosso.
 m1992 <- im.import("matogrosso_l5_1992219_lrg.jpg")
 m2006 <- im.import("matogrosso_ast_2006209_lrg.jpg")
 
@@ -643,6 +683,25 @@ y2006 <- c(45, 55)
 
 tabout <- data.frame(class, y1992, y2006)
 tabout
+
+library(ggplot2) 
+#let's plot the percentage of 1992 
+t1<-ggplot(tab, aes(x=class, y=y1992, color=class)) + geom_bar(stat="identity", fill="white") #aes=aesthetics characteristics
+t1
+#let's get a table with the bars of the percentage of the year 2006
+t2<-ggplot(tab, aes(x=class, y=y2006, color=class)) + geom_bar(stat="identity", fill="white")
+t2
+
+#to plot them together, we can use the patchwork package. 
+install.packages("patchwork")
+library(patchwork)
+t1+t2 #we see the two plotted together 
+
+#let's rescale the two graphs
+#we give the same scale to actually make them comparable
+p1 <- ggplot(tabout, aes(x=class, y=y1992, color=class)) + geom_bar(stat="identity", fill="white") + ylim(c(0,100)) 
+p2 <- ggplot(tabout, aes(x=class, y=y2006, color=class)) + geom_bar(stat="identity", fill="white") + ylim(c(0,100))
+p1 + p2
 
 #--------------------
 
@@ -715,13 +774,21 @@ library(viridis)
 im.list()
 
 sent <- im.import("sentinel.png")
-pairs(sent) #sentinel 2 and 3 (red and green) are really correlated to each other (0.98), the NIR is less correlated so it is not adding informations in fact we should remove it
+#how to choose the layer to which apply the sd calculation?
+#here we chose NIR, but we need a method
+#this method is the multivariate analysis
+
+pairs(sent) 
+#red and green are very correlated to each other (0.98 as pearson coefficient)
+#nir is less correlated to the other bands, so it is adding some information
 
 #perform PCA on sent
 sentpc <- im.pca(sent)
-
+sentpc
+#sd is 77 in the first principal component
+#the first component is pc1. we can separate it
 pc1 <- sentpc$PC1
-viridisc <- colorRampPalette(viridis(7))(255)
+viridisc <- colorRampPalette(viridis(7))(255) #change the colours
 plot(pc1, col=viridisc)
 
 #calculating standard deviation on top of pc1
@@ -741,8 +808,10 @@ plot(pc1, col=viridisc)
 plot(pc1sd3, col=viridisc)
 plot(pc1sd7, col=viridisc)
 
+#we have chosen in a objective manner to choose the band on which to make the calculation
+
+
 #stack all the standard deviation layers
 sdstack <- c(sd3, sd7, pc1sd3, pc1sd7)
 names(sdstack) <- c("sd3", "sd7", "pc1sd3", "pc1sd7") 
 plot(sdstack, col=viridisc)
-
