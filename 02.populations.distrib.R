@@ -1,4 +1,4 @@
-# why population disperse over tha landscape in acertain manner?
+# why does the population disperse over the landscape in a certain manner?
 
 library(sdm)
 library(terra)
@@ -7,10 +7,10 @@ file <- system.file("external/species.shp", package="sdm")
 
 rana <- vect(file)
 
-rana$Occurrence # questo ci da i "presence absence data", per capire se ci sono o no gli esemplari in determinate posizioni
-#facciamo il grafico delle posizioni del vettore rana, cioè presenza e assenza 
+rana$Occurrence # this gives us the ‘presence absence data’ to understand whether or not there are specimens in certain positions
+#we graph the positions of the frog vector, i.e. presence and absence 
 plot(rana)
-#dobbiamo scegliere solamente dove c'è presenza o assenza
+#we must only choose where there is presence or absence
 
 # selecting presences
 pres <- rana[rana$Occurrence==1,] #per chiudere si usa la virgola, 
@@ -24,15 +24,15 @@ plot(pres, cex=0.5)
 plot(abse, cex=0.5)
 
 # exercise: plot pre and abse alltogether with two different colours
-#prima è meglio chiudere i grafici con la funzione dev.off()
+# first it is better to close the graphs with the dev.off() function
 par(mfrow=c(1,2))
 plot(pres, cex=0.5, col="blue")
 plot(abse, cex=0.5, col="dark green")
-#in questo modo lo si fa in due grafici diversi mentre per farlo nello stesso grafico si usa:
+# this way you do it in two different graphs whereas to do it in the same graph you use:
 plot(pres, col="dark blue")
 points(abse, col="light blue")
 
-# predictors: environmnetal variables
+# predictors: environmental variables
 elev <- system.file("external/elevation.asc", package="sdm") #questa volta non stiamo importando dati ma immagini, cioè rasters
 elevmap <- rast(elev) #from terra package
 elevmap
