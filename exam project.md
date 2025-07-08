@@ -47,16 +47,18 @@ plot(ndvi2024, main = "2024")
 We classify the rasters into binary images to highlight low-vegetation areas (NDVI ≤ 0.2).
 
 ```
-reclass_matrix <- matrix(c(Inf, 0.2, -Inf, 0.2))
+reclass_matrix <- matrix(c(-Inf, 0.2, 1,   # from -Inf to 0.2 → value 1
+                           0.2, Inf, 0),  # from 0.2 to Inf  → value 0
+                         ncol = 3, byrow = TRUE)
 
 classed.2016 <- classify(ndvi2016, reclass_matrix)[[1]]
 classed.2024 <- classify(ndvi2024, reclass_matrix)[[1]]
 
 par(mfrow = c(1, 2))
-plot(classed.2016, main = "2016")
-plot(classed.2024, main = "2024")
+plot(classed.2016, main = "Classified NDVI 2016")
+plot(classed.2024, main = "Classified NDVI 2024")
 ```
-<img src="Rplot03.png" width="100%" />
+<img src="Rplot05.png" width="100%" />
 
 ## Cropping to the Study Area
 
@@ -77,7 +79,7 @@ par(mfrow = c(1, 2))
 plot(final2016, main = "2016")
 plot(final2024, main = "2024")
 ```
-<img src="Rplot04.png" width="100%" />
+<img src="Rplot06.png" width="100%" />
 
 ## Deforestation Quantification
 We calculate the pixel value frequencies and percentage of deforested areas.
