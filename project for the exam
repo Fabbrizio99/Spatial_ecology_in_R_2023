@@ -29,29 +29,26 @@ plot(ndvi2024,  main="2024")
 
 dev.off()
 
-###################################### classify ################################
-# I reclassified the two NDVI rasters to compare them visually.
+###################################### CLASSIFY ################################
+# I define a reclassification matrix:
+# NDVI <= 0.2 → 1 (deforested areas)
+# NDVI >  0.2 → 0 (vegetated areas)
+reclass_matrix <- matrix(c(-Inf, 0.2, 1,   # da -Inf a 0.2 → valore 1
+                           0.2, Inf, 0),  # da 0.2 a Inf  → valore 0
+                         ncol = 3, byrow = TRUE)
 
-reclass_matrix <- matrix(c(Inf,0.2, -Inf, 0.2 ))
+# I apply the reclassification to the NDVI rasters.
+class.2016 <- classify(ndvi2016, reclass_matrix)
+class.2024 <- classify(ndvi2024, reclass_matrix)
 
-class.2016<-classify(ndvi2016, reclass_matrix) # reclassification matrix,
-# where the result is a binary raster: 0 or 1 for each pixel.
+# Select the first layer (if the rasters are multi-band)
+classed.2016 <- class.2016[[1]]
+classed.2024 <- class.2024[[1]]
 
-# I want to extract the first layer 
-plot(class.2016)
-classed.2016<-class.2016[[1]]
-plot(classed.2016)
-
-class.2024<-classify(ndvi2024, reclass_matrix)
-plot(class.2024)
-classed.2024<-class.2024[[1]]
-plot(classed.2024)
-
-# I created a map of the variation, which shows the loss of vegetation.
-par(mfrow=c(1,2))
-plot(classed.2016, main="2016")
-plot(classed.2024, main="2024")
-
+# Visualise
+par(mfrow = c(1, 2))
+plot(classed.2016, main = "Classified NDVI 2016")
+plot(classed.2024, main = "Classified NDVI 2024")
 dev.off()
 ################################# CUT IMAGE #########################
 
@@ -106,38 +103,38 @@ n2024
 # then I calculate the percentage
 p2016<-f2016[["count"]]/n2016*100
 p2016
-#deforested= 3.409679 %
+#deforested= 5.562261 %
 
 p2024<-f2024[["count"]]/n2024*100
 p2024
-#deforested= 4.196954 %
+#deforested= 6.731877 %
 
 ################################ 2024-16 ###################################
 # total area of the territory analysed
-#13642.61 km ^2
+#13612.12 [m^2]
 #in km^2
 area
 areakm
 
-def2016<-areakm*3.409679/100
+def2016<-areakm*5.562261/100
 def2016
 # area deforested in 2016
 
-def2024<-areakm*4.196954/100
+def2024<-areakm*6.731877/100
 def2024
 # area deforested in 2024
 
 # I calculate the absolute increase in deforestation
 aumento.def<-def2024-def2016
 aumento.def
-#107.1648 [Km^2] , how much deforestation has increased
+#159.2096 [Km^2] , how much deforestation has increased
 
 tasa.anual<-aumento.def/8 #total deforestation divided by 8 years
 tasa.diaria<-aumento.def/(8*365) 
 tasa.anual
-# 13.3956 [Km^2]
+# 19.9012 [Km^2]
 tasa.diaria
-# 0.03670029 [Km^2]
+# 0.05452382 [Km^2]
 ##all in km^2
 
 # print the results in an easily readable format
