@@ -10,7 +10,7 @@ library(sf)
 #to set our working directory from where R will take the data
 setwd("/Users/mattiafabris/Desktop/progetto R esame")
 
-#km area-> 13642.61 km ^2
+#km area-> 13612.12 [km^2]
 
 # Let's import data from 2016
 # They are Copernicus browser data coming from Sentinel-2
@@ -111,8 +111,8 @@ p2024
 
 ################################ 2024-16 ###################################
 # total area of the territory analysed
-#13612.12 [m^2]
-#in km^2
+#13612.12 [km^2]
+
 area
 areakm
 
