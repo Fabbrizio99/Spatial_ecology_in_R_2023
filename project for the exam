@@ -1,0 +1,148 @@
+#recall all the packages needed for the project
+library(terra)
+library(raster) 
+library(rgdal)
+library(sf)
+##############################  IMPORT TIFF  #################################### 
+#### Import images as TIFF files directly from Sentinel
+#### so that R automatically recognises spatial information
+
+#to set our working directory from where R will take the data
+setwd("/Users/mattiafabris/Desktop/progetto R esame")
+
+#km area-> 13642.61 km ^2
+
+# Let's import data from 2016
+# They are Copernicus browser data coming from Sentinel-2
+# I'm importing the NDVI directly
+ndvi2016<-rast("2016-01-17-00_00_2016-01-17-23_59_Sentinel-2_L1C_NDVI.tiff")
+plot(ndvi2016)
+
+# Now I'm importing the NDVI from 2024
+ndvi2024<-rast("2024-01-10-00_00_2024-01-10-23_59_Sentinel-2_L1C_NDVI.tiff")
+plot(ndvi2024)
+
+# I used the par() function to compare visually the two images
+par(mfrow=c(1,2))
+plot(ndvi2016, main="2016")
+plot(ndvi2024,  main="2024")
+
+dev.off()
+
+###################################### classify ################################
+# I reclassified the two NDVI rasters to compare them visually.
+
+reclass_matrix <- matrix(c(Inf,0.2, -Inf, 0.2 ))
+
+class.2016<-classify(ndvi2016, reclass_matrix) # reclassification matrix,
+# where the result is a binary raster: 0 or 1 for each pixel.
+
+# I want to extract the first layer 
+plot(class.2016)
+classed.2016<-class.2016[[1]]
+plot(classed.2016)
+
+class.2024<-classify(ndvi2024, reclass_matrix)
+plot(class.2024)
+classed.2024<-class.2024[[1]]
+plot(classed.2024)
+
+# I created a map of the variation, which shows the loss of vegetation.
+par(mfrow=c(1,2))
+plot(classed.2016, main="2016")
+plot(classed.2024, main="2024")
+
+dev.off()
+################################# CUT IMAGE #########################
+
+#import shape
+#The shapefile contains the boundaries of the study area.
+shp <- st_read("/Users/mattiafabris/Desktop/progetto R esame")
+
+#calculate the area in shp
+area <- st_area(shp)
+area
+#Converts the area from m² to km².
+areakm<-area/1e6
+areakm
+
+#cut image 2016
+cut.2016 <- crop(classed.2016, shp) #Reduces the extent of the 2016 raster to the bounding box of the shapefile.
+plot(cut.2016)
+final2016 <- mask(cut.2016, shp) #Apply a mask: keeps cut.2016 pixels only where the polygon falls, placing NA elsewhere.
+plot(final2016)
+
+# we do the same for 2024
+#cut image
+cut.2024 <- crop(classed.2024, shp)
+plot(cut.2024)
+final2024 <- mask(cut.2024, shp)
+plot(final2024)
+
+par(mfrow=c(1,2))
+plot(final2016, main="2016")
+plot(final2024, main="2024")
+ 
+dev.off()
+
+############################## QUANTIFY CHANGE ################################
+
+
+f2016<-freq(final2016)
+#calculates the frequency of values contained in a raster. 
+#Counts how many cells in the raster contain each unique value
+f2024<-freq(final2024)
+f2016
+f2024
+
+#compute percentage of pixel class
+n2016<-ncell(final2016)
+#Returns the total number of pixels in a raster object.
+n2024<-ncell(final2024)
+n2016
+n2024
+
+# vector with the number of pixels for each value
+# then I calculate the percentage
+p2016<-f2016[["count"]]/n2016*100
+p2016
+#deforested= 3.409679 %
+
+p2024<-f2024[["count"]]/n2024*100
+p2024
+#deforested= 4.196954 %
+
+################################ 2024-16 ###################################
+# total area of the territory analysed
+#13642.61 km ^2
+#in km^2
+area
+areakm
+
+def2016<-areakm*3.409679/100
+def2016
+# area deforested in 2016
+
+def2024<-areakm*4.196954/100
+def2024
+# area deforested in 2024
+
+# I calculate the absolute increase in deforestation
+aumento.def<-def2024-def2016
+aumento.def
+#107.1648 [Km^2] , how much deforestation has increased
+
+tasa.anual<-aumento.def/8 #total deforestation divided by 8 years
+tasa.diaria<-aumento.def/(8*365) 
+tasa.anual
+# 13.3956 [Km^2]
+tasa.diaria
+# 0.03670029 [Km^2]
+##all in km^2
+
+# print the results in an easily readable format
+cat("Area deforestata nel 2016: ", round(def2016, 2), "km²\n")
+cat("Area deforestata nel 2024: ", round(def2024, 2), "km²\n")
+cat("Incremento totale: ", round(aumento.def, 2), "km²\n")
+cat("Tasso annuo: ", round(tasa.anual, 2), "km²/anno\n")
+cat("Tasso giornaliero: ", round(tasa.diaria, 4), "km²/giorno\n")
