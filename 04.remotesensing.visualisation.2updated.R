@@ -7,23 +7,23 @@ library(terra)
 
 #to see all the data in the package
 im.list() #we get all the different data we can use
-#all the functions from imageRy start with I'm.
+#all the functions from imageRy start with im.
 
-#we will first use the sentinel data (satellite from ESA). 
-#we are using images of the same spatial resolution (10metres). we will use 4 different bands
+#we will first use the Sentinel data (satellite from ESA). 
+#we are using images of the same spatial resolution (10metres). We will use 4 different bands
 b2 <- im.import("sentinel.dolomites.b2.tif")
 cl <- colorRampPalette(c("black","grey","light grey")) (100) #to change colors
 cl <- colorRampPalette(c("dark grey","grey","light grey")) (100)
 plot(b2, col=cl)
 
-#every sensor gathers information with different wavelengths
-#every color is a spectral band. As an example, band 8 is near infra-red (NIR) with 10 meters of spatial resolution
+# Every sensor gathers information with different wavelengths
+# Every color is a spectral band. As an example, band 8 is near infra-red (NIR) with 10 meters of spatial resolution
 
 # import the green band from sentinel-2 (band 3)
 b3 <- im.import("sentinel.dolomites.b3.tif")
 cl <- colorRampPalette(c("dark grey","grey","light grey")) (100)
 plot(b3, col=cl)
-# the highest the reflectance, the lightest the colour on the right scale
+# the higher the reflectance, the lighter the colour on the right scale
 
 # to import the red band (band number 4)
 b4 <- im.import("sentinel.dolomites.b4.tif")
@@ -78,7 +78,7 @@ im.plotRGB(stacksent, r=3, g=2, b=4) #everything that reflects the NIR will beco
 #if we want to see the correlation of information from one band to another:
 ?pairs
 pairs(stacksent)
-#we have the dots plotted and the pearson correlation value
+#we have the dots plotted and the Pearson correlation value
 #second and third bands are highly correlated, they give more or less the same information
 #the NIR is not that correlated, it adds some more informations
 #in the graphs we see the reflectance of the points
