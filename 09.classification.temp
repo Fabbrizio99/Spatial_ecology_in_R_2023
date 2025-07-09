@@ -1,8 +1,8 @@
-#we want to compare different areas and the differences during time based on the numer of pixels (mountain, wood, urban)
+#we want to compare different areas and the differences over time based on the number of pixels (mountain, wood, urban)
 #pixels are training areas-->useful to make known the cluster = is a set of individual object with same carachteristics
-#to classify one pixel we see wich class is the nearest (based on the diffrent distances on axis)
+#to classify one pixel we see which class is the nearest (based on the different distances on axis)
 
-##classifying satellite images and estimate the amount of change
+## Classifying satellite images and estimating the amount of change
 
 library(terra)
 library(imageRy)
@@ -12,7 +12,7 @@ im.list()
 
 #we can classify the amount of energy of sun gases. 
 sun <- im.import("Solar_Orbiter_s_first_views_of_the_Sun_pillars.jpg") #let's import the picture we are interested in
-#we should explain to the software which are the numbers of classes. here for example we expect three classes
+#we should explain to the software which are the numbers of classes. Here for example we expect three classes
 sun.class <- im.classify(sun, num_clusters = 3)
 sun.class
 plot(sun.class) #we get the pixels classified for the amount of energy.
@@ -45,7 +45,7 @@ plot(m2006c[[1]])
 
 #command to count pixels(with the frequency of them) 
 f1992 <- freq(m1992c)
-#to find the percentage we just need to divide the number by the totalt number of pixels
+#to find the percentage we just need to divide the number by the total number of pixels
 tot1992 <- ncell(m1992c) #function to count the total number
 tot1992
 p1992 <- f1992 * 100 / tot1992
@@ -54,7 +54,7 @@ p1992
 
 #percentage 
 f2006 <- freq(m2006c)
-#to find the percentage we just need to divide the number by the totalt number of pixels
+#to find the percentage we just need to divide the number by the total number of pixels
 tot2006 <- ncell(m2006c) #function to count the total number
 tot2006
 p2006 <- f2006 * 100 / tot2006
