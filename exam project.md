@@ -140,8 +140,8 @@ cat("Daily rate: ", round(daily_rate, 4), "km²/day\n")
 ```
 Resulting in the following output
 ```
-Area deforested in 2016:  757.14 km²
-Area deforested in 2024:  916.35 km²
+Deforested area in 2016:  757.14 km²
+Deforested area in 2024:  916.35 km²
 Total increase:  159.21 km²
 Annual rate: 19.9 km²/year
 Daily rate:  0.0545 km²/day
