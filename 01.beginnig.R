@@ -13,7 +13,7 @@ duccio
 #we can make some operations
 zima*duccio
 
-#and then rename the variables with wiìhich we perform the operations
+#and then rename the variables with which we perform the operations
 final <- zima*duccio
 final
 
@@ -24,15 +24,15 @@ final^2
 # with arrays we use c = "concatenate" arguments and then assign them to a variable
 sophie <- c(10,20,30,50,70) 
 
-# this ine is an array with the amount of people in the different spots where microplastics were collected 
+# this one is an array with the amount of people in the different spots where microplastics were collected 
 paula <- c(100,500,600,1000,2000) #people
 
 #we can create a plot with the 2 variables, sophie (x) and paula (y) 
 plot(paula, sophie) #there is a positive correlation 
 
-#i if you want to put a new label, you can use the plot function with argument xlab=" " and ylab=" "
+#if you want to put a new label, you can use the plot function with argument xlab=" " and ylab=" "
 plot(paula, sophie, xlab="number of people", ylab="microplastics")
-#another way is to renamne variables 
+#another way is to rename variables 
 people <- paula
 microplastics <- sophie
 
@@ -48,5 +48,5 @@ plot(people, microplastics, pch=19, cex=2, col="blue") #to change colors, here i
 
 #how to install packages, with the function install.packages 
 install.packages("sp") 
-# to see if the package is installed succesfully, we recall it with the library function
+# to see if the package is installed successfully, we recall it with the library function
 library(sp)
