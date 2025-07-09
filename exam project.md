@@ -44,7 +44,7 @@ plot(ndvi2024, main = "2024")
 
 ## NDVI Classification
 
-We classify the rasters into binary images to highlight low-vegetation areas (NDVI ≤ 0.2).
+Classify the rasters into binary images to highlight low-vegetation areas (NDVI ≤ 0.2).
 
 ```
 reclass_matrix <- matrix(c(-Inf, 0.2, 1,   # from -Inf to 0.2 → value 1
@@ -62,7 +62,7 @@ plot(classed.2024, main = "Classified NDVI 2024")
 
 ## Cropping to the Study Area
 
-We import the shapefile defining the Amazon study area and crop the rasters accordingly.
+Import the shapefile defining the Amazon study area and crop the rasters accordingly.
 
 ```
 shp <- st_read("/Users/mattiafabris/Desktop/progetto R esame")
@@ -82,7 +82,8 @@ plot(final2024, main = "2024")
 <img src="Rplot06.png" width="100%" />
 
 ## Deforestation Quantification
-We calculate the pixel value frequencies and percentage of deforested areas.
+
+Calculate the pixel value frequencies and the percentage of deforested areas.
 
 ```
 f2016 <- freq(final2016)
@@ -95,15 +96,33 @@ p2016 <- f2016[["count"]] / n2016 * 100
 p2024 <- f2024[["count"]] / n2024 * 100
 ```
 
-The results that we obtain are the following
+The results obtained are the following
 
 ```
+> f2016
+  layer value  count
+1     1     0  42677
+2     1     1 528217
+> f2024
+  layer value  count
+1     1     0  51651
+2     1     1 519243
 
+> n2016
+[1] 767260
+> n2024
+[1] 767260
+
+> p2016
+[1]  5.562261 
+> p2024
+[1]  6.731877 
 ```
+In this way, we can see that the rate of deforestation in 2016 was 5.562261%, while in 2024 it rose to 6.731877%.
 
 ## Change and Rate Calculations
 
-We compute total deforested area and the rate of increase over time.
+Compute the total deforested area and the rate of increase over time.
 
 ```
 def2016 <- areakm * p2016 / 100
@@ -119,4 +138,11 @@ cat("Total increase: ", round(aumento.def, 2), "km²\n")
 cat("Annual rate: ", round(annual_rate, 2), "km²/year\n")
 cat("Daily rate: ", round(daily_rate, 4), "km²/day\n")
 ```
-
+Resulting in the following output
+```
+Area deforested in 2016:  757.14 km²
+Area deforested in 2024:  916.35 km²
+Total increase:  159.21 km²
+Annual rate: 19.9 km²/year
+Daily rate:  0.0545 km²/day
+```
